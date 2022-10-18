@@ -1,0 +1,17 @@
+version: '3'
+services:
+  traveltime:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    environment:
+      - DEBUG_STUFF
+      - MTAG
+      - TAG
+      - TRAVELTIME_OFFSET
+      - TRAVELTIME_KEY
+      - TRAVELTIME_ID
+      - OUTPUT_FILE
+    volumes:
+      - ./output:/output

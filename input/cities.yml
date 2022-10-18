@@ -1,0 +1,64 @@
+- id: "Birmingham"
+  coords:
+    lat: 52.489471
+    lng: -1.898575
+- id: "Bristol"
+  coords:
+    lat: 51.4532627
+    lng: -2.5935387
+- id: "Cardiff"
+  coords:
+    lat: 51.4748057
+    lng: -3.1731995
+- id: "Coventry"
+  coords:
+    lat: 52.4094028
+    lng: -1.5065272
+- id: "Edinburgh"
+  coords:
+    lat: 55.953251
+    lng: -3.188267
+- id: "Glasgow"
+  coords:
+    lat: 55.860916
+    lng: -4.251433
+- id: "Leeds"
+  coords:
+    lat: 53.801277
+    lng: -1.548567
+- id: "Liverpool"
+  coords:
+    lat: 53.400002
+    lng: -2.983333
+- id: "London"
+  coords:
+    lat: 51.509865
+    lng: -0.118092
+- id: "Manchester"
+  coords:
+    lat: 53.483959
+    lng: -2.244644
+- id: "Milton Keynes"
+  coords:
+    lat: 52.0055233
+    lng: -0.7243816
+- id: "Newcastle Upon Tyne"
+  coords:
+    lat: 54.966667
+    lng: -1.600000
+- id: "Nottingham"
+  coords:
+    lat: 52.950001
+    lng: -1.150000
+- id: "Oxford"
+  coords:
+    lat: 51.7451905
+    lng: -1.2614253
+- id: "Sheffield"
+  coords:
+    lat: 53.383331
+    lng: -1.466667
+- id: "York"
+  coords:
+    lat: 53.958332
+    lng: -1.080278
