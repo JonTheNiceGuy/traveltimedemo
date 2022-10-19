@@ -34,11 +34,14 @@ def write_output(writer, destinations, output, all_tags):
     result_counter = 0
     result_counter_output = []
     result_times_output = []
+    result_times_seconds = []
     for destination in destinations:
         result_output += [destination]
         result_counter = result_counter+1
+        result_times_seconds += [f'{destination}_seconds']
         result_counter_output += [f'result{str(result_counter).zfill(2)}']
         result_times_output += [f'result{str(result_counter).zfill(2)}_Time']
+    result_output += result_times_seconds + result_counter_output + result_times_output
     for tag in sorted(all_tags):
         result_output += [f'Tag: {tag}']
     writer.writerow(result_output)
@@ -50,12 +53,17 @@ def write_output(writer, destinations, output, all_tags):
         result_counter = 0
         result_counter_output = []
         result_times_output = []
+        result_times_seconds = []
         for destination in destinations:
             result_counter = result_counter+1
             if destination in person_data:
                 result_output += [person_data[destination] or ""]
             else:
                 result_output += [len(destinations)+1]
+            if f'{destination}_seconds' in person_data:
+                result_times_seconds += [person_data[f"{destination}_seconds"] or ""]
+            else:
+                result_times_seconds += [(60*60*4)+1]
             if f'result{str(result_counter).zfill(2)}' in person_data:
                 result_counter_output += [person_data[f"result{str(result_counter).zfill(2)}"] or ""]
             else:
@@ -64,6 +72,7 @@ def write_output(writer, destinations, output, all_tags):
                 result_times_output += [person_data[f"result{str(result_counter).zfill(2)}Time"] or ""]
             else:
                 result_times_output += ['']
+        result_output += result_times_seconds + result_counter_output + result_times_output
         for tag in sorted(all_tags):
             if tag in person_data["tags"]:
                 result_output += [tag]
@@ -89,25 +98,24 @@ people = {}
 for (dirpath, dirnames, filenames) in walk("/input/people/"):
     for this_filename in filenames:
         if this_filename.lower()[-3:] == "yml" or this_filename.lower()[-4] == "yaml":
-        with open(dirpath + this_filename, "r") as stream:
-            try:
-                people = people | yaml.safe_load(stream)
-            except yaml.YAMLError as exc:
-                print(exc)
-                exit(1)
+            with open(dirpath + this_filename, "r") as stream:
+                try:
+                    people = people | yaml.safe_load(stream)
+                except yaml.YAMLError as exc:
+                    print(exc)
+                    exit(1)
 
 groups = {}
 for (dirpath, dirnames, filenames) in walk("/input/groups/"):
     for this_filename in filenames:
         if this_filename.lower()[-3:] == "yml" or this_filename.lower()[-4] == "yaml":
-        with open(dirpath + this_filename, "r") as stream:
-            try:
-                group_data = yaml.safe_load(stream)
-                q(group_data)
-                groups = groups | group_data
-            except yaml.YAMLError as exc:
-                print(exc)
-                exit(1)
+            with open(dirpath + this_filename, "r") as stream:
+                try:
+                    group_data = yaml.safe_load(stream)
+                    groups = groups | group_data
+                except yaml.YAMLError as exc:
+                    print(exc)
+                    exit(1)
 
 with open("/input/postcode-outcodes.csv", "r") as stream:
     try:
@@ -216,7 +224,8 @@ for person in people_locations:
                     "destination": id,
                     "arrivalTime": atime,
                     "departureTime": dtime,
-                    "travelTime": format_timespan(ttime, max_units=2)
+                    "travelTime": format_timespan(ttime, max_units=2),
+                    "travelSeconds": this_ttime
                 }
     sorted_results = dict(sorted(all_results.items()))
     slot = 0
@@ -229,6 +238,9 @@ for person in people_locations:
         output[person["id"]][result_data["destination"]] = slot
         output[person["id"]
                ][f'result{str(slot).zfill(2)}Time'] = result_data["travelTime"]
+        output[person["id"]
+               ][f'result{str(slot).zfill(2)}Seconds'] = result_data["travelSeconds"]
+        output[person["id"]][f'{result_data["destination"]}_seconds'] = result_data["travelSeconds"]
 
 output_file = sys.stdout
 if "OUTPUT_FILE" in os.environ and os.environ["OUTPUT_FILE"] != '':
