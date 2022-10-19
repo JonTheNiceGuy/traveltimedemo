@@ -88,6 +88,7 @@ for location in city_locations:
 people = {}
 for (dirpath, dirnames, filenames) in walk("/input/people/"):
     for this_filename in filenames:
+        if this_filename.lower()[-3:] == "yml" or this_filename.lower()[-4] == "yaml":
         with open(dirpath + this_filename, "r") as stream:
             try:
                 people = people | yaml.safe_load(stream)
@@ -98,6 +99,7 @@ for (dirpath, dirnames, filenames) in walk("/input/people/"):
 groups = {}
 for (dirpath, dirnames, filenames) in walk("/input/groups/"):
     for this_filename in filenames:
+        if this_filename.lower()[-3:] == "yml" or this_filename.lower()[-4] == "yaml":
         with open(dirpath + this_filename, "r") as stream:
             try:
                 group_data = yaml.safe_load(stream)
