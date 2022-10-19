@@ -29,7 +29,7 @@ def tagwalk(tags, people):
             data.append(tag)
     return data
 
-def write_output(writer, destinations, output):
+def write_output(writer, destinations, output, all_tags):
     result_output = ["Alias"]
     result_counter = 0
     result_counter_output = []
@@ -39,7 +39,8 @@ def write_output(writer, destinations, output):
         result_counter = result_counter+1
         result_counter_output += [f'result{str(result_counter).zfill(2)}']
         result_times_output += [f'result{str(result_counter).zfill(2)}_Time']
-    result_output += result_counter_output + result_times_output
+    for tag in sorted(all_tags):
+        result_output += [f'Tag: {tag}']
     writer.writerow(result_output)
 
     sorted_output = dict(sorted(output.items()))
@@ -63,8 +64,11 @@ def write_output(writer, destinations, output):
                 result_times_output += [person_data[f"result{str(result_counter).zfill(2)}Time"] or ""]
             else:
                 result_times_output += ['']
-
-        result_output += result_counter_output + result_times_output
+        for tag in sorted(all_tags):
+            if tag in person_data["tags"]:
+                result_output += [tag]
+            else:
+                result_output += [""]
         writer.writerow(result_output)
 
 with open("/input/cities.yml", "r") as stream:
@@ -111,6 +115,7 @@ with open("/input/postcode-outcodes.csv", "r") as stream:
         print(exc)
         exit(1)
 
+all_tags = []
 people_locations = []
 for person_id in people:
     person = people[person_id]
@@ -145,11 +150,15 @@ for person_id in people:
                     person["coords"]["lat"] = float(outcode[1])
                     person["coords"]["lng"] = float(outcode[2])
 
-        q(person)
+        for tag in person["mytags"]:
+            if tag not in all_tags:
+                all_tags.append(tag)
+
         people_locations.append(person)
 
 if "DEBUG_STUFF" in os.environ and os.environ["DEBUG_STUFF"] != '':
     print(people_locations)
+    print(sorted(all_tags))
     exit(1)
 
 the_time = datetime.utcnow()
@@ -209,7 +218,7 @@ for person in people_locations:
                 }
     sorted_results = dict(sorted(all_results.items()))
     slot = 0
-    output[person["id"]] = {}
+    output[person["id"]] = {"tags": person["mytags"]}
     for result in sorted_results:
         slot = slot+1
         result_data = sorted_results[result]
@@ -224,8 +233,8 @@ if "OUTPUT_FILE" in os.environ and os.environ["OUTPUT_FILE"] != '':
     output_file = f'/output/{os.environ["OUTPUT_FILE"]}'
     with open(output_file, "wt") as fp:
         writer = csv.writer(fp, delimiter=",", quoting=csv.QUOTE_ALL)
-        write_output(writer, destinations, output)
+        write_output(writer, destinations, output, all_tags)
 else:
     writer = csv.writer(sys.stdout, delimiter=",", quoting=csv.QUOTE_ALL)
-    write_output(writer, destinations, output)
+    write_output(writer, destinations, output, all_tags)
 
