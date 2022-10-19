@@ -1,0 +1,19 @@
+# Managers?
+smithj:
+  postcode: E17
+  tags:
+    - marketing
+bloggsf:
+  postcode: RM11
+  tags:
+    - RandD
+# Contributors
+jonesd:
+  postcode: M19
+  tags:
+    - M-smithj # Special M- prefixed tag to indicate this is a manager
+westa:
+  postcode: RG15
+  tags:
+    - M-bloggsf
+    - SuperSecretProjectA
